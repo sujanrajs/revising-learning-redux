@@ -1,6 +1,7 @@
 const redux = require("redux");
 const createStore = redux.createStore;
 const bindActionCreators = redux.bindActionCreators;
+const combineReducers = redux.combineReducers;
 
 const CAKE_ORDERED = "CAKE_ORDERED";
 const CAKE_RESTOCKED = "CAKE_RESTOCKED";
@@ -35,51 +36,60 @@ function restockCake(qty = 1) {
   };
 }
 
-const initialState = {
-  numberOfCakes: 10,
-  numberOfIceCreams: 20,
+const initialCakeState = {
+  numOfCakes: 10,
+};
+
+const initialIceCreamState = {
+  numOfIceCreams: 20,
 };
 
 // (previousState, action) => newState;
-
-const reducer = (state = initialState, action) => {
+const cakeReducer = (state = initialCakeState, action) => {
   switch (action.type) {
     case CAKE_ORDERED:
       return {
         ...state,
-        numberOfCakes: state.numberOfCakes - 1,
+        numOfCakes: state.numOfCakes - 1,
       };
     case CAKE_RESTOCKED:
       return {
         ...state,
-        numberOfCakes: state.numberOfCakes + action.payload,
-      };
-    case ICECREAM_ORDERED:
-      return {
-        ...state,
-        numberOfIceCreams: state.numberOfIceCreams - 1,
-      };
-    case ICECREAM_RESTOCKED:
-      return {
-        ...state,
-        numberOfIceCreams: state.numberOfIceCreams + action.payload,
+        numOfCakes: state.numOfCakes + action.payload,
       };
     default:
       return state;
   }
 };
 
-const store = createStore(reducer);
+const iceCreamReducer = (state = initialIceCreamState, action) => {
+  switch (action.type) {
+    case ICECREAM_ORDERED:
+      return {
+        ...state,
+        numOfIceCreams: state.numOfIceCreams - 1,
+      };
+    case ICECREAM_RESTOCKED:
+      return {
+        ...state,
+        numOfIceCreams: state.numOfIceCreams + action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+const rootReducer = combineReducers({
+  cake: cakeReducer,
+  iceCream: iceCreamReducer,
+});
+
+const store = createStore(rootReducer);
 console.log("Initial state", store.getState());
 
 const unsubscribe = store.subscribe(() =>
   console.log("update state", store.getState())
 );
-
-/* store.dispatch(orderCake());
-store.dispatch(orderCake());
-store.dispatch(orderCake());
-store.dispatch(restockCake(3)); */
 
 const actions = bindActionCreators(
   { orderCake, restockCake, orderIceCream, restockIceCream },
