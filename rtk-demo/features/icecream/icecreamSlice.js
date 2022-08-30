@@ -1,3 +1,5 @@
+const { cakeActions } = require("../cake/cakeSlice");
+
 const createSlice = require("@reduxjs/toolkit").createSlice;
 
 const initialState = {
@@ -16,10 +18,16 @@ const icecreamSlice = createSlice({
     },
   },
   // This extra reducer implies if a customer orders a cake we give them a ice-cream as reward !
-  extraReducers: {
+  // Extra reducer is replaced by builder function
+  /* extraReducers: {
     ["cake/ordered"]: (state) => {
       state.numOfIcecreams--;
     },
+  }, */
+  extraReducers: (builder) => {
+    builder.addCase(cakeActions.ordered, (state) => {
+      state.numOfIcecreams--;
+    });
   },
 });
 
