@@ -15,6 +15,12 @@ const icecreamSlice = createSlice({
       state.numOfIcecreams += action.payload;
     },
   },
+  // This extra reducer implies if a customer orders a cake we give them a ice-cream as reward !
+  extraReducers: {
+    ["cake/ordered"]: (state) => {
+      state.numOfIcecreams--;
+    },
+  },
 });
 
 module.exports = icecreamSlice.reducer;
